@@ -1,0 +1,24 @@
+<%= form_for(@letter) do |f| %>
+  <% if @letter.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@letter.errors.count, "error") %> prohibited this message from being saved:</h2>
+
+      <ul>
+      <% @letter.errors.full_letters.each do |msg| %>
+        <li><%= msg %></li>d
+        
+      <% end %>
+      </ul>v
+    </div>
+  <% end %>
+
+<!-- Don't know whether to change the below -->
+
+  <div class="field">
+    <%= f.label :letter %><br />
+    <%= f.text_field :letter %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
