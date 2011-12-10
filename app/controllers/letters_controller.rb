@@ -13,7 +13,7 @@ class LettersController < ApplicationController
   # GET /letters/1
   # GET /letters/1.xml
   def show
-    @letter = Letter.find(params[:letter])
+    @letter = Letter.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
