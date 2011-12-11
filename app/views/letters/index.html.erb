@@ -8,7 +8,7 @@
     <th></th>
   </tr>
 
-<% @letters.each do |letter| %>
+<% @letters.reverse_each do |letter| %>
   <tr>
     <td><%= letter.letter %></td>
     <td><%= link_to 'Show', letter %></td>

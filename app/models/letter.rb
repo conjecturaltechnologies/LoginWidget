@@ -14,15 +14,15 @@ class Letter
   key :username,      String
   
   # Comments
-  #many :comments
+  many :comments
 
   # Note this: ids are of class ObjectId.
   key :user_id,   ObjectId
   timestamps!
   
   # Relationships.
-  #belongs_to :user
+  belongs_to :user
 
   # Validations.
-  # validates_presence_of :title, :url, :user_id
+  validates_presence_of :title, :url, :user_id
 end
