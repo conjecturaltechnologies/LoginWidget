@@ -4,9 +4,8 @@ class Letter
   key :title,     String
   key :url,       String
   key :letter,    String
-  key :voters,    Array
-  key :upvotes,   Integer, :default => 0
-  key :downvotes, Integer, :default => 0
+  key :upvotes,   Array
+  key :downvotes, Array
   key :relevance, Integer, :default => 0
 
   # Cached values.
@@ -24,5 +23,5 @@ class Letter
   belongs_to :user
 
   # Validations.
-  validates_presence_of :title, :url, :user_id
+  validates_presence_of :title, :user_id
 end

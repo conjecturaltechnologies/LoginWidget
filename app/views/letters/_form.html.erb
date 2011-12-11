@@ -4,11 +4,11 @@
       <h2><%= pluralize(@letter.errors.count, "error") %> prohibited this message from being saved:</h2>
 
       <ul>
-      <% @letter.errors.full_letters.each do |msg| %>
+      <% @letter.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>d
         
       <% end %>
-      </ul>v
+      </ul>
     </div>
   <% end %>
 

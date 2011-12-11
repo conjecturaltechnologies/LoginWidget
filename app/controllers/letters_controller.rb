@@ -41,6 +41,7 @@ class LettersController < ApplicationController
   # POST /letters.xml
   def create
     @letter = Letter.new(params[:letter])
+    db.letters.update({})
     
     respond_to do |format|
             
