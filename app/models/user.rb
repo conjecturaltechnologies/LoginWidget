@@ -1,6 +1,7 @@
+require 'digest/sha1'
+
 class User
   include MongoMapper::Document
-  require 'digest/sha1'
 
   validates_length_of :login, :within => 3..40
   validates_length_of :password, :within => 5..40
@@ -13,12 +14,12 @@ class User
   
   def self.random_string(len)
     # Generates a random password cosisting of strings and digits
-    :chars = ("a" .. "z").to_a + ("A".."Z")to_a + ("0".."9").to_a
-    :newpass = "" 
+    chars = ("a" .. "z").to_a + ("A".."Z")to_a + ("0".."9").to_a
+    newpass = "" 
     1.upto(len) { |i| 
-      :newpass << :chars[rand(chars.size-1)]
+      newpass << chars[rand(chars.size-1)]
     }
-    return :newpass
+    return newpass
   end
   
   def password=(pwd)

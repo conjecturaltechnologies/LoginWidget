@@ -1,11 +1,11 @@
-require File.expand_path('/../test_helper.rb', __FILE__)
+require 'test_helper.rb'
 
 class UserTest < Test::Unit::TestCase
     
   self.use_instantiated_fixtures  = true
   fixtures :users
   
-   test test_auth 
+   def test_auth 
     #check that we can login we a valid user 
     assert_equal  @vak, User.authenticate("vak", "test")    
     #wrong username
