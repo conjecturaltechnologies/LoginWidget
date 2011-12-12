@@ -41,7 +41,7 @@ class LettersController < ApplicationController
   # POST /letters.xml
   def create
     @letter = Letter.new(params[:letter])
-       
+    
     respond_to do |format|
             
       if @letter.save
