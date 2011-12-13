@@ -4,4 +4,7 @@ CloudFoundryRailsTutorial::Application.routes.draw do
   
   resources :letters
   root :to => "letters#index"
+  
+  resources :users
+  root :to => "users#create"
 end
