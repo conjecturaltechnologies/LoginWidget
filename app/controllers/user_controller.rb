@@ -61,5 +61,13 @@ class UserController < ApplicationController
       end
     end
   end
+  
+  def welcome
+    
+  end
+  
+  def hidden
+    
+  end
 
 end
