@@ -4,17 +4,17 @@ defaults: &defaults
 
 development:
   <<: *defaults
-  database: apostate_dev_db
+  database: apostate_orig_auth_dev_test_db
 
 test:
   <<: *defaults
-  database: apostate_test_db
+  database: apostate_orig_auth_test_db
 
 # set these environment variables on your prod server
 production:
   host: <%= JSON.parse( ENV['VCAP_SERVICES'] )['mongodb-1.8'].first['credentials']['hostname'] rescue 'localhost'%>
   port: <%= JSON.parse( ENV['VCAP_SERVICES'] )['mongodb-1.8'].first['credentials']['port'] rescue '27017'%>
-  database: <%= JSON.parse( ENV['VCAP_SERVICES'] )['mongodb-1.8'].first['credentials']['db'] rescue 'apostate_prod_db' %>
+  database: <%= JSON.parse( ENV['VCAP_SERVICES'] )['mongodb-1.8'].first['credentials']['db'] rescue 'cloud_foundry_rails_tutorial' %>
   username: <%= JSON.parse( ENV['VCAP_SERVICES'] )['mongodb-1.8'].first['credentials']['username'] rescue ''%>
   password: <%= JSON.parse( ENV['VCAP_SERVICES'] )['mongodb-1.8'].first['credentials']['password'] rescue ''%>
 

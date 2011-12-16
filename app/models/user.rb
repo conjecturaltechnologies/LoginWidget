@@ -1,64 +1,51 @@
-# uses bcrypt-ruby gem for password hashing be sure to config.gem it
 require 'digest/sha1'
 
 class User
   include MongoMapper::Document
-  
-  key :email, String, :required => true
-  key :crypted_password, String
-  key :reset_password_code, String
-  key :reset_password_code_until, Time
-  
-  RegEmailName   = '[\w\.%\+\-]+'
-  RegDomainHead  = '(?:[A-Z0-9\-]+\.)+'
-  RegDomainTLD   = '(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)'
-  RegEmailOk     = /\A#{RegEmailName}@#{RegDomainHead}#{RegDomainTLD}\z/i
-  
-  def self.authenticate(email, secret)
-    u = User.first(:conditions => {:email => email.downcase})
-    u && u.authenticated?(secret) ? u : nil
+
+validates_length_of :login, :within => 3..40
+  validates_length_of :password, :within => 5..40
+  validates_presence_of :login, :email, :password, :password_confirmation, :salt
+  validates_uniqueness_of :login, :email
+  validates_confirmation_of :password
+  validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :message => "Invalid email"  
+
+  attr_protected :id, :salt
+
+  attr_accessor :password, :password_confirmation
+
+  def self.authenticate(login, pass)
+    u=find(:first, :conditions=>["login = ?", login])
+    return nil if u.nil?
+    return u if User.encrypt(pass, u.salt)==u.hashed_password
+    nil
+  end  
+
+  def password=(pass)
+    @password=pass
+    self.salt = User.random_string(10) if !self.salt?
+    self.hashed_password = User.encrypt(@password, self.salt)
   end
-  
-  validates_length_of :email, :within => 6..100, :allow_blank => true
-  validates_format_of :email, :with => RegEmailOk, :allow_blank => true
-  
-  PasswordRequired = Proc.new { |u| u.password_required? }
-  validates_presence_of :password, :if => PasswordRequired
-  validates_confirmation_of :password, :if => PasswordRequired, :allow_nil => true
-  validates_length_of :password, :minimum => 6, :if => PasswordRequired, :allow_nil => true
-  
-  def authenticated?(secret)
-    password == secret ? true : false
+
+  def send_new_password
+    new_pass = User.random_string(10)
+    self.password = self.password_confirmation = new_pass
+    self.save
+    Notifications.deliver_forgot_password(self.email, self.login, new_pass)
   end
-  
-  def password
-    if crypted_password.present?
-      @password ||= BCrypt::Password.new(crypted_password)
-    else
-      nil
-    end
+
+  protected
+
+  def self.encrypt(pass, salt)
+    Digest::SHA1.hexdigest(pass+salt)
   end
-  
-  def password=(value)
-    if value.present?
-      @password = value
-      self.crypted_password = BCrypt::Password.create(value)
-    end
+
+  def self.random_string(len)
+    #generat a random password consisting of strings and digits
+    chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
+    newpass = ""
+    1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
+    return newpass
   end
-  
-  def email=(new_email)
-    new_email.downcase! unless new_email.nil?
-    write_attribute(:email, new_email)
-  end
-  
-  def password_required?
-    crypted_password.blank? || !password.blank?
-  end
-  
-  def set_password_code!
-    seed = "#{email}#{Time.now.to_s.split(//).sort_by {rand}.join}"
-    self.reset_password_code_until = 1.day.from_now
-    self.reset_password_code = Digest::SHA1.hexdigest(seed)
-    save!
-  end
+
 end
